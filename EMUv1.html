@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMMORTAL PHASEX</title>
+    <!-- 구글 폰트 로딩 방식 변경 (안정적인 적용) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #020106;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #d1c9e0;
+        }
+
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .base-bg {
+            position: absolute;
+            inset: 0;
+            background: #020106;
+            z-index: 0;
+        }
+
+        .nebula {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: 
+                radial-gradient(circle at 18% 20%, rgba(90, 35, 130, 0.16) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(70, 25, 110, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(45, 15, 70, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 35% 75%, rgba(60, 20, 95, 0.1) 0%, transparent 45%);
+            filter: blur(30px);
+        }
+
+        #starfield {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        .planet-container {
+            position: absolute;
+            bottom: -220px;
+            right: -120px;
+            width: 620px;
+            height: 620px;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .planet-atmosphere {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 38%, rgba(160, 110, 240, 0.25), rgba(90, 40, 170, 0.08) 50%, transparent 72%);
+            filter: blur(25px);
+            z-index: 1;
+        }
+
+        .planet-rings-back {
+            position: absolute;
+            top: -20px;
+            left: -80px;
+            width: 760px;
+            height: 640px;
+            transform: rotateX(74deg) rotateY(-16deg) rotateZ(-18deg);
+            border-radius: 50%;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 0%,
+                transparent 46%,
+                rgba(170, 125, 230, 0.25) 47%,
+                rgba(160, 100, 230, 0.6) 52%,
+                rgba(60, 30, 100, 0.3) 53%,
+                transparent 54%,
+                rgba(210, 160, 255, 0.55) 56%,
+                rgba(130, 80, 200, 0.35) 62%,
+                transparent 65%
+            );
+            filter: drop-shadow(0 0 10px rgba(160, 100, 230, 0.25));
+            z-index: 2;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+        }
+
+        .planet-body {
+            position: absolute;
+            top: 110px;
+            left: 110px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 25%, rgba(220, 190, 255, 0.35) 0%, transparent 35%),
+                linear-gradient(140deg, #4d3372 0%, #2a1a45 35%, #150c26 65%, #05020a 100%);
+            box-shadow: 
+                inset -35px -35px 70px rgba(2, 1, 6, 0.95),
+                inset 15px 15px 40px rgba(210, 170, 255, 0.3),
+                0 0 50px rgba(120, 60, 200, 0.2);
+            overflow: hidden;
+            z-index: 3;
+        }
+
+        .planet-body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: repeating-linear-gradient(
+                165deg,
+                transparent,
+                transparent 10px,
+                rgba(180, 140, 240, 0.05) 10px,
+                rgba(180, 140, 240, 0.05) 22px,
+                transparent 22px,
+                transparent 35px,
+                rgba(100, 60, 150, 0.08) 35px,
+                rgba(100, 60, 150, 0.08) 55px
+            );
+            filter: blur(1px);
+            opacity: 0.85;
+        }
+
+        .planet-body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 75% 75%, rgba(2, 1, 6, 0.92) 0%, rgba(2, 1, 6, 0.6) 45%, transparent 80%);
+        }
+
+        .planet-rings-front {
+            position: absolute;
+            top: -20px;
+            left: -80px;
+            width: 760px;
+            height: 640px;
+            transform: rotateX(74deg) rotateY(-16deg) rotateZ(-18deg);
+            border-radius: 50%;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 0%,
+                transparent 46%,
+                rgba(170, 125, 230, 0.25) 47%,
+                rgba(160, 100, 230, 0.6) 52%,
+                rgba(60, 30, 100, 0.3) 53%,
+                transparent 54%,
+                rgba(210, 160, 255, 0.55) 56%,
+                rgba(130, 80, 200, 0.35) 62%,
+                transparent 65%
+            );
+            filter: drop-shadow(0 0 10px rgba(160, 100, 230, 0.25));
+            z-index: 4;
+            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 30;
+        }
+
+        /* 왼쪽 상단 노랫 패널 전용 스타일 */
+        .music-panel-container {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 40;
+        }
+
+        .music-panel-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(15, 7, 25, 0.65);
+            border: 1px solid rgba(140, 90, 190, 0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: all 200ms ease;
+        }
+
+        .music-panel-btn:hover {
+            border-color: rgba(175, 120, 235, 0.6);
+            background: rgba(22, 10, 36, 0.8);
+        }
+
+        .music-icon-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 12px;
+        }
+
+        .music-icon-bars span {
+            width: 2px;
+            background: rgba(185, 130, 250, 0.6);
+            border-radius: 1px;
+            transition: height 200ms ease, background-color 200ms ease;
+        }
+
+        .music-icon-bars span:nth-child(1) { height: 4px; }
+        .music-icon-bars span:nth-child(2) { height: 8px; }
+        .music-icon-bars span:nth-child(3) { height: 12px; }
+
+        .music-panel-btn.playing .music-icon-bars span {
+            background: #c38eff;
+        }
+
+        .music-title-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: rgba(220, 205, 245, 0.9);
+            text-transform: uppercase;
+        }
+
+        .music-volume-mini {
+            display: none;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 14px;
+            background: rgba(15, 7, 25, 0.65);
+            border: 1px solid rgba(140, 90, 190, 0.25);
+            backdrop-filter: blur(12px);
+        }
+
+        .music-volume-mini.visible {
+            display: flex;
+        }
+
+        .music-mini-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 50px;
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(140, 90, 190, 0.3);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .music-mini-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #c38eff;
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(185, 130, 250, 0.8);
+        }
+
+        .brand-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 36px;
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+        }
+
+        .brand-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: rgba(210, 200, 230, 0.75);
+            text-transform: uppercase;
+        }
+
+        .screen-view {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 400ms ease, transform 400ms ease;
+        }
+
+        .screen-view.hidden {
+            opacity: 0;
+            transform: scale(0.96);
+            pointer-events: none;
+        }
+
+        .pin-panel {
+            width: 320px;
+            padding: 28px 24px;
+            border-radius: 18px;
+            background: rgba(15, 7, 25, 0.65);
+            border: 1px solid rgba(140, 90, 190, 0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(200, 160, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pin-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: rgba(220, 205, 245, 0.9);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .license-input {
+            width: 100%;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(8, 4, 15, 0.7);
+            border: 1px solid rgba(130, 85, 180, 0.35);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            text-align: center;
+            letter-spacing: 2px;
+            outline: none;
+            margin-bottom: 16px;
+            transition: all 150ms ease;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .license-input:focus {
+            border-color: rgba(175, 120, 235, 0.7);
+            box-shadow: 0 0 12px rgba(150, 90, 220, 0.25);
+            background: rgba(12, 6, 22, 0.85);
+        }
+
+        .license-input::placeholder {
+            color: rgba(140, 125, 165, 0.4);
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(120, 60, 200, 0.6) 0%, rgba(70, 30, 130, 0.7) 100%);
+            border: 1px solid rgba(170, 110, 245, 0.4);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 200ms ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, rgba(140, 75, 225, 0.8) 0%, rgba(90, 40, 160, 0.85) 100%);
+            border-color: rgba(200, 140, 255, 0.7);
+            box-shadow: 0 0 15px rgba(160, 90, 240, 0.4);
+        }
+
+        .auth-status-msg {
+            height: 16px;
+            margin-top: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 200ms ease;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .auth-status-msg.error { color: #ff6b81; opacity: 1; }
+        .auth-status-msg.success { color: #7bed9f; opacity: 1; }
+
+        .cards-container {
+            display: flex;
+            gap: 16px;
+            margin-top: -20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1100px;
+        }
+
+        .card {
+            position: relative;
+            width: 190px;
+            height: 180px;
+            border-radius: 17px;
+            background: rgba(15, 7, 25, 0.62);
+            border: 1px solid rgba(140, 90, 190, 0.28);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(200, 160, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 18px 10px;
+            cursor: pointer;
+            transition: all 200ms ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(175, 120, 235, 0.48);
+            background: rgba(22, 10, 36, 0.72);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(120, 60, 180, 0.18);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 3px 7px;
+            border-radius: 10px;
+            background: rgba(10, 5, 18, 0.7);
+            border: 1px solid rgba(130, 90, 170, 0.22);
+            font-family: 'Inter', sans-serif;
+            font-size: 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.waiting { color: rgba(160, 145, 185, 0.6); }
+        .status-badge.ready { color: rgba(205, 190, 235, 0.88); border-color: rgba(150, 100, 210, 0.35); }
+
+        .icon-circle-wrapper {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .outer-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(150, 110, 190, 0.18); }
+        .inner-ring { position: absolute; inset: 6px; border-radius: 50%; border: 1px solid rgba(150, 110, 190, 0.10); }
+
+        .card-icon {
+            width: 26px;
+            height: 26px;
+            color: rgba(225, 215, 235, 0.88);
+            z-index: 2;
+        }
+
+        .card-title {
+            margin-top: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(235, 230, 245, 0.92);
+        }
+
+        .card-subtitle {
+            margin-top: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(145, 130, 170, 0.65);
+        }
+
+        .log-panel-container {
+            margin-top: 16px;
+            width: 1014px;
+            border-radius: 14px;
+            background: rgba(12, 6, 20, 0.75);
+            border: 1px solid rgba(130, 85, 180, 0.28);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: all 300ms ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        }
+
+        .log-header {
+            height: 34px;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(18, 9, 30, 0.8);
+            border-bottom: 1px solid rgba(130, 85, 180, 0.18);
+        }
+
+        .log-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: rgba(200, 185, 225, 0.85);
+            font-weight: 500;
+        }
+
+        .log-controls { display: flex; gap: 8px; }
+
+        .log-btn {
+            height: 22px;
+            padding: 0 10px;
+            border-radius: 6px;
+            background: rgba(25, 12, 40, 0.7);
+            border: 1px solid rgba(140, 90, 190, 0.25);
+            color: rgba(180, 165, 205, 0.75);
+            font-family: 'Inter', sans-serif;
+            font-size: 6.5px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 150ms ease;
+        }
+
+        .log-btn:hover {
+            border-color: rgba(175, 120, 230, 0.45);
+            color: #fff;
+            background: rgba(40, 20, 60, 0.8);
+        }
+
+        .log-body {
+            height: 120px;
+            padding: 10px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8.5px;
+            color: rgba(255, 255, 255, 0.9);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            transition: height 300ms ease, padding 300ms ease;
+        }
+
+        .log-body::-webkit-scrollbar { width: 5px; }
+        .log-body::-webkit-scrollbar-track { background: rgba(10, 5, 18, 0.5); border-radius: 3px; }
+        .log-body::-webkit-scrollbar-thumb { background: rgba(140, 90, 190, 0.35); border-radius: 3px; }
+        .log-body::-webkit-scrollbar-thumb:hover { background: rgba(175, 120, 230, 0.6); }
+
+        .log-panel-container.collapsed .log-body {
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+        }
+
+        .log-entry { 
+            display: flex; 
+            gap: 10px; 
+            line-height: 1.4; 
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .log-time { 
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(180, 180, 180, 0.6); 
+        }
+        .log-text { 
+            font-family: 'JetBrains Mono', monospace;
+            color: #ffffff; 
+        }
+
+        .kill-panel {
+            margin-top: 10px;
+            width: 1014px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(15, 7, 25, 0.62);
+            border: 1px solid rgba(140, 90, 190, 0.28);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: rgba(235, 230, 245, 0.92);
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 500ms ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .kill-panel.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .kill-panel.hidden { display: none; }
+
+        .settings-panel {
+            width: 420px;
+            padding: 24px;
+            border-radius: 20px;
+            background: rgba(14, 7, 26, 0.7);
+            border: 1px solid rgba(160, 110, 225, 0.3);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(220, 180, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .settings-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(140, 90, 190, 0.2);
+            padding-bottom: 12px;
+        }
+
+        .settings-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: rgba(220, 205, 245, 0.95);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            background: rgba(30, 15, 50, 0.6);
+            border: 1px solid rgba(160, 110, 225, 0.3);
+            color: rgba(220, 205, 245, 0.8);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 200ms ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(60, 25, 95, 0.8);
+            color: #fff;
+            border-color: rgba(185, 130, 250, 0.6);
+        }
+
+        .audio-card {
+            background: rgba(22, 11, 38, 0.45);
+            border: 1px solid rgba(140, 90, 190, 0.2);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: border-color 200ms ease;
+        }
+
+        .audio-card:hover { border-color: rgba(185, 130, 250, 0.4); }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .setting-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-icon {
+            width: 16px;
+            height: 16px;
+            color: rgba(185, 130, 250, 0.8);
+        }
+
+        .setting-label-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: rgba(215, 205, 235, 0.9);
+        }
+
+        .setting-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 7.5px;
+            color: rgba(150, 135, 175, 0.6);
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 42px;
+            height: 22px;
+            appearance: none;
+            background: rgba(10, 5, 20, 0.7);
+            border: 1px solid rgba(140, 90, 190, 0.35);
+            border-radius: 11px;
+            outline: none;
+            cursor: pointer;
+            transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle-switch:checked {
+            background: linear-gradient(135deg, rgba(140, 75, 225, 0.9), rgba(90, 40, 160, 0.9));
+            border-color: rgba(200, 150, 255, 0.6);
+            box-shadow: 0 0 10px rgba(150, 80, 230, 0.4);
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(200, 185, 225, 0.9);
+            transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), background-color 200ms ease;
+        }
+
+        .toggle-switch:checked::before {
+            transform: translateX(20px);
+            background: #ffffff;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 2px;
+        }
+
+        /* 슬라이더 좌측 채움 그래디언트 바 스타일 추가 */
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #c38eff 0%, #c38eff 50%, rgba(10, 5, 20, 0.8) 50%, rgba(10, 5, 20, 0.8) 100%);
+            outline: none;
+            border: 1px solid rgba(140, 90, 190, 0.2);
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #c38eff;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(185, 130, 250, 0.6);
+            transition: transform 150ms ease, background 150ms ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #d4aaff;
+            box-shadow: 0 0 12px rgba(185, 130, 250, 0.9);
+        }
+
+        .volume-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            color: rgba(185, 130, 250, 0.85);
+            width: 30px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgmAudio" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="background">
+        <div class="base-bg"></div>
+        <div class="nebula"></div>
+        <canvas id="starfield"></canvas>
+        <div class="planet-container">
+            <div class="planet-atmosphere"></div>
+            <div class="planet-rings-back"></div>
+            <div class="planet-body"></div>
+            <div class="planet-rings-front"></div>
+        </div>
+    </div>
+
+    <header>
+        <!-- 왼쪽 상단 끝 노래 제어 패널 -->
+        <div class="music-panel-container">
+            <div class="music-panel-btn" id="topMusicBtn" onclick="toggleTopMusic()">
+                <div class="music-icon-bars">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="music-title-text">LOFI STUDY</span>
+            </div>
+            <div class="music-volume-mini" id="topMusicVolContainer">
+                <input type="range" class="music-mini-slider" id="topVolSlider" min="0" max="1" step="0.01" value="0.5" oninput="changeTopVolume()">
+            </div>
+        </div>
+
+        <div class="brand-container">
+            <span class="brand-title">Have Official</span>
+        </div>
+    </header>
+
+    <div class="screen-view" id="pinScreen">
+        <div class="pin-panel">
+            <div class="pin-title">LICENSE AUTH</div>
+            <input 
+                type="text" 
+                class="license-input" 
+                id="licenseKeyInput" 
+                placeholder="ENTER LICENSE KEY" 
+                autocomplete="off" 
+                onkeydown="if(event.key === 'Enter') verifyLicense()"
+            />
+            <button class="submit-btn" onclick="verifyLicense()">VERIFY</button>
+            <div class="auth-status-msg" id="statusMsg"></div>
+        </div>
+    </div>
+
+    <div class="screen-view hidden" id="mainScreen">
+        <section class="cards-container">
+            <article class="card" onclick="clickExit()">
+                <div class="icon-circle-wrapper">
+                    <div class="outer-ring"></div>
+                    <div class="inner-ring"></div>
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                </div>
+                <div class="card-title">EXIT</div>
+                <div class="card-subtitle">TERMINATE SESSION</div>
+            </article>
+
+            <article class="card" onclick="clickBtn2()">
+                <div class="status-badge waiting" id="badge2">WAITING</div>
+                <div class="icon-circle-wrapper">
+                    <div class="outer-ring"></div>
+                    <div class="inner-ring"></div>
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71 1.26-1.5 1.5-2.5l-4.5-4.5c-1 0-1.79.79-2.5 1.5z"></path><path d="M12 15l-3-3 8.5-8.5c.83-.83 2.17-.83 3 0s.83 2.17 0 3L12 15z"></path></svg>
+                </div>
+                <div class="card-title">LAUNCH PRIVATE</div>
+                <div class="card-subtitle">INJECT MODULE</div>
+            </article>
+
+            <article class="card" onclick="clickBtn3()">
+                <div class="status-badge ready" id="badge3">READY</div>
+                <div class="icon-circle-wrapper">
+                    <div class="outer-ring"></div>
+                    <div class="inner-ring"></div>
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="6"></rect><path d="M6 12h4m-2-2v4"></path></svg>
+                </div>
+                <div class="card-title">LAUNCH EMU</div>
+                <div class="card-subtitle">EMULATOR MODULE</div>
+            </article>
+
+            <article class="card" onclick="clickBtn4()">
+                <div class="status-badge waiting">N/A</div>
+                <div class="icon-circle-wrapper">
+                    <div class="outer-ring"></div>
+                    <div class="inner-ring"></div>
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div class="card-title">SPOOFER</div>
+                <div class="card-subtitle">HWID SPOOF</div>
+            </article>
+
+            <article class="card" onclick="openSettings()">
+                <div class="icon-circle-wrapper">
+                    <div class="outer-ring"></div>
+                    <div class="inner-ring"></div>
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </div>
+                <div class="card-title">SETTINGS</div>
+                <div class="card-subtitle">AUDIO & SYSTEM</div>
+            </article>
+        </section>
+
+        <div class="log-panel-container" id="logPanel">
+            <div class="log-header">
+                <span class="log-title">CONSOLE</span>
+                <div class="log-controls">
+                    <button class="log-btn" onclick="clearLogs()">CLEAN</button>
+                    <button class="log-btn" id="toggleLogBtn" onclick="toggleLogPanel()">FOLD</button>
+                </div>
+            </div>
+            <div class="log-body" id="logContainer">
+                <div class="log-entry">
+                    <span class="log-time">[SYSTEM]</span>
+                    <span class="log-text">Authentication successful. Session initialized.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="kill-panel hidden" id="killPanel">Kill...</div>
+    </div>
+
+    <div class="screen-view hidden" id="settingsScreen">
+        <div class="settings-panel">
+            <div class="settings-header-bar">
+                <div class="settings-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>AUDIO SETTINGS</span>
+                </div>
+                <button class="back-btn" onclick="closeSettings()">BACK</button>
+            </div>
+            
+            <div class="audio-card">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        <div>
+                            <div class="setting-label-text">BACKGROUND MUSIC</div>
+                            <div class="setting-desc">Enable ambient background audio</div>
+                        </div>
+                    </div>
+                    <input type="checkbox" class="toggle-switch" id="musicToggle" onchange="toggleMusic()">
+                </div>
+
+                <div class="volume-container">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" oninput="changeVolume()">
+                    <span class="volume-value" id="volDisplay">50%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isEmuRunning = false;
+        let isEmuCompleted = false;
+        let isInjecting = false;
+
+        const bgm = document.getElementById('bgmAudio');
+        const musicToggle = document.getElementById('musicToggle');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volDisplay = document.getElementById('volDisplay');
+
+        // 상단 패널 요소
+        const topMusicBtn = document.getElementById('topMusicBtn');
+        const topMusicVolContainer = document.getElementById('topMusicVolContainer');
+        const topVolSlider = document.getElementById('topVolSlider');
+
+        bgm.volume = 0.5;
+
+        // 슬라이더 좌측 보라색 채움 처리 함수
+        function updateSliderBackground(val) {
+            const percentage = val * 100;
+            volumeSlider.style.background = `linear-gradient(to right, #c38eff 0%, #c38eff ${percentage}%, rgba(10, 5, 20, 0.8) ${percentage}%, rgba(10, 5, 20, 0.8) 100%)`;
+        }
+
+        // 초기 슬라이더 배경 적용
+        updateSliderBackground(volumeSlider.value);
+
+        function playDarkBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(110, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 1.0);
+                
+                gain.gain.setValueAtTime(0.7, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 1.0);
+            } catch (e) {
+                console.log("AudioContext playback error:", e);
+            }
+        }
+
+        // 상단 노랫 패널 재생/정지 토글 함수
+        function toggleTopMusic() {
+            if (bgm.paused) {
+                bgm.play().then(() => {
+                    topMusicBtn.classList.add('playing');
+                    topMusicVolContainer.classList.add('visible');
+                    musicToggle.checked = true;
+                }).catch(e => console.log('Audio playback prevented by browser'));
+            } else {
+                bgm.pause();
+                topMusicBtn.classList.remove('playing');
+                topMusicVolContainer.classList.remove('visible');
+                musicToggle.checked = false;
+            }
+        }
+
+        // 상단 미니 소리 조절 함수
+        function changeTopVolume() {
+            const val = topVolSlider.value;
+            bgm.volume = val;
+            volumeSlider.value = val;
+            volDisplay.textContent = Math.round(val * 100) + '%';
+            updateSliderBackground(val);
+        }
+
+        function toggleMusic() {
+            if (musicToggle.checked) {
+                bgm.play().then(() => {
+                    topMusicBtn.classList.add('playing');
+                    topMusicVolContainer.classList.add('visible');
+                }).catch(e => console.log('Audio playback prevented by browser'));
+            } else {
+                bgm.pause();
+                topMusicBtn.classList.remove('playing');
+                topMusicVolContainer.classList.remove('visible');
+            }
+        }
+
+        function changeVolume() {
+            const val = volumeSlider.value;
+            bgm.volume = val;
+            topVolSlider.value = val;
+            volDisplay.textContent = Math.round(val * 100) + '%';
+            updateSliderBackground(val);
+        }
+
+        function openSettings() {
+            document.getElementById('mainScreen').classList.add('hidden');
+            document.getElementById('settingsScreen').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsScreen').classList.add('hidden');
+            document.getElementById('mainScreen').classList.remove('hidden');
+        }
+
+        // 별자리 배경
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let width, height, stars = [];
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            stars = [];
+
+            const totalStars = Math.floor((width * height) / 2200);
+
+            for (let i = 0; i < totalStars; i++) {
+                const isBright = Math.random() < 0.08;
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: isBright ? Math.random() * 1.1 + 0.8 : Math.random() * 0.6 + 0.2,
+                    baseAlpha: Math.random() * 0.3 + 0.05,
+                    maxAlpha: isBright ? Math.random() * 0.4 + 0.6 : Math.random() * 0.3 + 0.3,
+                    twinkleSpeed: Math.random() * 0.015 + 0.003,
+                    phase: Math.random() * Math.PI * 2,
+                    color: getStarColor()
+                });
+            }
+        }
+
+        function getStarColor() {
+            const rand = Math.random();
+            if (rand < 0.06) return { r: 180, g: 210, b: 255 };
+            if (rand < 0.12) return { r: 220, g: 190, b: 255 };
+            if (rand < 0.18) return { r: 255, g: 230, b: 200 };
+            return { r: 245, g: 242, b: 255 };
+        }
+
+        function renderStars(timestamp) {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                const twinkle = Math.sin(timestamp * star.twinkleSpeed + star.phase);
+                const alpha = star.baseAlpha + (star.maxAlpha - star.baseAlpha) * ((twinkle + 1) / 2);
+                const { r, g, b } = star.color;
+
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                ctx.fill();
+
+                if (star.size > 0.8 && alpha > 0.5) {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.size * 2.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.12})`;
+                    ctx.fill();
+                }
+            }
+            requestAnimationFrame(animateStars);
+        }
+
+        function animateStars(timestamp) {
+            renderStars(timestamp * 0.05);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        requestAnimationFrame(animateStars);
+
+        const targetPin = "1234";
+        const statusMsg = document.getElementById('statusMsg');
+        const inputKey = document.getElementById('licenseKeyInput');
+
+        function verifyLicense() {
+            const val = inputKey.value.trim();
+
+            if (val === targetPin) {
+                statusMsg.textContent = "LICENSE AUTH SUCCESSFUL!";
+                statusMsg.className = "auth-status-msg success";
+
+                setTimeout(() => {
+                    document.getElementById('pinScreen').classList.add('hidden');
+                    setTimeout(() => {
+                        document.getElementById('mainScreen').classList.remove('hidden');
+                    }, 300);
+                }, 400);
+            } else {
+                statusMsg.textContent = "INVALID LICENSE KEY";
+                statusMsg.className = "auth-status-msg error";
+                inputKey.value = "";
+                inputKey.focus();
+            }
+        }
+
+        const logContainer = document.getElementById('logContainer');
+        const logPanel = document.getElementById('logPanel');
+        const toggleLogBtn = document.getElementById('toggleLogBtn');
+
+        function getTime() {
+            const now = new Date();
+            return now.toTimeString().split(' ')[0];
+        }
+
+        function addLog(msg) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${getTime()}]</span><span class="log-text">${msg}</span>`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function clearLogs() {
+            logContainer.innerHTML = '';
+            addLog('Console logs cleared.');
+        }
+
+        function toggleLogPanel() {
+            const isCollapsed = logPanel.classList.toggle('collapsed');
+            toggleLogBtn.textContent = isCollapsed ? 'EXPAND' : 'FOLD';
+        }
+
+        function clickExit() {
+            const mainScreen = document.getElementById('mainScreen');
+            mainScreen.classList.add('hidden');
+
+            setTimeout(() => {
+                isEmuRunning = false;
+                isEmuCompleted = false;
+                isInjecting = false;
+                inputKey.value = "";
+                statusMsg.textContent = "";
+                statusMsg.className = "auth-status-msg";
+                
+                document.getElementById('badge3').textContent = "READY";
+                const badge2 = document.getElementById('badge2');
+                badge2.textContent = "WAITING";
+                badge2.className = "status-badge waiting";
+
+                document.getElementById('pinScreen').classList.remove('hidden');
+            }, 400);
+        }
+
+        function clickBtn2() {
+            if (isInjecting) return;
+            if (!isEmuCompleted) {
+                addLog("Please launch the game after starting the emulator.");
+                return;
+            }
+
+            isInjecting = true;
+            addLog("Injecting...");
+
+            const injectDelay = Math.floor(Math.random() * 4000) + 5000;
+            setTimeout(() => {
+                let count = 10;
+                const timer = setInterval(() => {
+                    addLog(`Injection ${count}`);
+                    if (count === 0) {
+                        clearInterval(timer);
+                        playDarkBeep();
+                        addLog("Injection completed.");
+                        isInjecting = false;
+                    }
+                    count--;
+                }, 1000);
+            }, injectDelay);
+        }
+
+        function clickBtn3() {
+            if (isEmuRunning || isEmuCompleted) return;
+            isEmuRunning = true;
+
+            addLog("Launching emulator...");
+            const killPanel = document.getElementById('killPanel');
+            killPanel.classList.remove('hidden');
+            setTimeout(() => {
+                killPanel.classList.add('visible');
+            }, 20);
+
+            const delay = Math.floor(Math.random() * 6000) + 6000;
+            setTimeout(() => {
+                playDarkBeep();
+                killPanel.classList.remove('visible');
+
+                setTimeout(() => {
+                    killPanel.classList.add('hidden');
+                    addLog("Please start the game.");
+
+                    document.getElementById('badge3').textContent = "START";
+                    
+                    const badge2 = document.getElementById('badge2');
+                    badge2.textContent = "READY";
+                    badge2.className = "status-badge ready";
+
+                    isEmuRunning = false;
+                    isEmuCompleted = true;
+                }, 500);
+            }, delay);
+        }
+
+        function clickBtn4() {
+            addLog("Currently unavailable.");
+        }
+    </script>
+</body>
+</html>
